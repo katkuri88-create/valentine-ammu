@@ -20,6 +20,7 @@
             align-items: center;
             overflow: hidden;
             position: relative;
+            touch-action: manipulation;
         }
 
         .hearts-background {
@@ -64,8 +65,28 @@
             box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
             text-align: center;
             max-width: 500px;
+            width: 90%;
             position: relative;
             z-index: 10;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .question {
+                font-size: 1.2em;
+            }
+            
+            button {
+                font-size: 1em;
+                padding: 12px 30px;
+            }
         }
 
         h1 {
@@ -100,6 +121,8 @@
             font-weight: bold;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         #yesBtn {
@@ -176,9 +199,15 @@
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
         const celebration = document.getElementById('celebration');
+        let noBtnMoved = false;
 
         // Function to move "No" button away
-        function moveNoButton() {
+        function moveNoButton(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
             const maxX = window.innerWidth - 150;
             const maxY = window.innerHeight - 150;
             
@@ -189,17 +218,24 @@
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
             noBtn.style.transform = 'none';
+            noBtn.style.transition = 'all 0.3s ease';
+            noBtnMoved = true;
         }
 
-        // Make "No" button run away on both hover (desktop) and touch (mobile)
+        // Desktop: hover
         noBtn.addEventListener('mouseover', moveNoButton);
+        
+        // Mobile: touch events
         noBtn.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            moveNoButton();
-        });
+            moveNoButton(e);
+        }, { passive: false });
+        
+        // Prevent click from working (it should just move)
         noBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            moveNoButton();
+            if (!noBtnMoved) {
+                moveNoButton(e);
+            }
         });
 
         // "Yes" button action
