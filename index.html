@@ -177,14 +177,10 @@
         const yesBtn = document.getElementById('yesBtn');
         const celebration = document.getElementById('celebration');
 
-        // Make "No" button run away from cursor
-        noBtn.addEventListener('mouseover', () => {
-            const container = document.querySelector('.buttons');
-            const containerRect = container.getBoundingClientRect();
-            
-            // Get random position within a reasonable range
-            const maxX = window.innerWidth - 200;
-            const maxY = window.innerHeight - 200;
+        // Function to move "No" button away
+        function moveNoButton() {
+            const maxX = window.innerWidth - 150;
+            const maxY = window.innerHeight - 150;
             
             const randomX = Math.random() * (maxX - 100) + 50;
             const randomY = Math.random() * (maxY - 100) + 50;
@@ -193,6 +189,17 @@
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
             noBtn.style.transform = 'none';
+        }
+
+        // Make "No" button run away on both hover (desktop) and touch (mobile)
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            moveNoButton();
+        });
+        noBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            moveNoButton();
         });
 
         // "Yes" button action
